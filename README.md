@@ -3,6 +3,7 @@
 
 ## 개발언어
 - Java v1.8.0
+- Java Script
 - MySQL
 
 ## 라이브러리/오픈소스 
