@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.model.mapper.CityMapper">
+	<select id="selectCity" resultType="City">
+		select * from sidocode
+	</select>
+	<select id="selectGugun" resultType="Gugun">
+		select * from guguncode where gugun_code like CONCAT(#{sidocode},'________') order by gugun_name
+	</select>
+	<select id="selectDong" resultType="Dong">
+		select * from dongcode where gugun = #{gugun} order by dong
+	</select>
+	<select id="selectAptCode" resultType="House">
+		select d.no, i.dong, d.aptName, d.buildyear, d.jibun, lat, lng, dealAmount, dealYear, dealMonth, dealDay, area, i.code
+		from housedeal d join houseinfo i on d.no = i.no 
+        where i.code = #{gugun_code}
+	</select>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.model.mapper.HouseMapper">
+
+	<select id="select" resultType="House">
+		select d.no, i.dong, d.aptName, i.lat, i.lng, d.dealAmount, d.dealYear, d.dealMonth, d.dealDay, round(d.area, 2) area
+		from housedeal d join houseinfo i on d.no = i.no
+	</select>
+	
+	<select id="selectDong" resultType="House">
+		<if test="#{searchDong}=='전체'">
+		select d.no, i.dong, d.aptName, i.lat, i.lng, d.dealAmount, d.dealYear, d.dealMonth, d.dealDay, round(d.area, 2) area
+		from housedeal d join houseinfo i on d.no = i.no 
+		</if>
+		<if test="#{searchDong}!='전체'">
+		select d.no, i.dong, d.aptName, lat, lng, dealAmount, dealYear, dealMonth, dealDay, round(d.area, 2) area
+		from housedeal d join houseinfo i on d.no = i.no 
+		where i.dong = #{searchDong}
+		</if>
+		<if test = "sortName != 'none'">
+			<if test="sortName == 'dealDay'">
+				order by cast(dealYear as unsigned) ${direction}, cast(dealMonth as unsigned) ${direction}, cast(dealDay as unsigned) ${direction}
+			</if>
+			<if test="sortName != 'dealDay'">
+				order by cast(${sortName} as unsigned) ${direction}
+			</if>
+		</if>
+	</select>
+	
+	<select id="selectApts" resultType="String">
+		select distinct d.aptName
+		from housedeal d join houseinfo i on d.no = i.no 
+		where i.code = #{gugun_code}
+	</select>
+	
+	<select id="selectLoc">
+		select lat, lng from houseinfo
+		where AptName like #{searchApt}
+	</select>
+	
+	<select id="selectApt" resultType="House">
+		select d.no, i.dong, d.aptName, lat, lng, dealAmount, dealYear, dealMonth, dealDay, round(d.area, 2) area
+		from housedeal d join houseinfo i on d.no = i.no 
+		where d.aptName like concat('%',#{aptName},'%')
+		<if test = "sortName != 'none'">
+			<if test="sortName == 'dealDay'">
+				order by cast(dealYear as unsigned) ${direction}, cast(dealMonth as unsigned) ${direction}, cast(dealDay as unsigned) ${direction}
+			</if>
+			<if test="sortName != 'dealDay'">
+				order by cast(${sortName} as unsigned) ${direction}
+			</if>
+		</if>
+	</select>
+	
+	<select id="searchAptDetail" resultType="House">
+		select d.no, i.dong, d.aptName, d.buildyear, d.jibun, lat, lng, dealAmount, dealYear, dealMonth, dealDay, round(d.area, 2) area
+		from housedeal d join houseinfo i on d.no = i.no 
+		where d.no = #{no} 
+	</select>
+	
+	<select id="selectData" resultType="ChartData">
+		select dealMonth month, round(avg(cast(dealAmount as unsigned))) avgAmount
+		from housedeal
+		where dealYear = 2019 and dong = #{dong}
+		group by dealMonth
+		order by cast(dealMonth as unsigned);
+	</select>
+</mapper>

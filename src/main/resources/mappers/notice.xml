@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.model.mapper.NoticeMapper">
+	<select id="registerArticle" parameterType="Notice">
+		insert into noticeTest (subject, content, regtime, id) 
+		values(#{subject}, #{content}, now(), "ssafy")
+	</select>
+	
+	<select id="listArticle" resultType="Notice">
+		select * from noticeTest
+		<if test="key != 'none'">
+			where ${key} like concat('%', #{word}, '%')
+		</if>
+		<if test="orderBy != 'none'">
+			order by ${orderBy} ${orderByDir}
+		</if>
+		order by regtime desc
+		<if test="limit">
+			limit ${offset}, ${countPerPage} 
+		</if>
+	</select>
+	
+	<select id="getArticle" resultType="Notice">
+		select * from noticeTest where articleNo = #{articleNo}
+	</select>
+	
+	<select id="modifyArticle" parameterType="Notice">
+		update noticeTest set subject = #{subject}, content = #{content}, regtime = now()
+		where articleNo = #{articleNo}
+	</select>
+	
+	<select id="deleteArtice" parameterType="Notice">
+		delete from noticeTest where articleNo = #{articleNo}
+	</select>
+	
+	<update id="updateViewCnt">
+		update noticeTest set viewCnt = viewCnt + 1
+		where articleNo = #{articleNo}
+	</update>
+	
+	<select id="getTotalCount" parameterType="SearchCondition" resultType="int">
+		select count(articleNo) from noticeTest
+		<if test="key!='none'">
+			where ${key} like concat('%',#{word},'%')
+		</if>
+	</select>
+	
+	<select id="listArticleRanking" resultType="Notice">
+		select * from noticeTest
+		order by viewCnt desc limit 5
+	</select>
+</mapper>

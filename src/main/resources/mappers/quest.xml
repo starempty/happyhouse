@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.model.mapper.QuestMapper">
+	<select id="list" resultType="Question">
+		select * from question
+	</select>
+	<select id="search" resultType="Question">
+		select * from question
+		where q_no = #{q_no}
+	</select>
+	<insert id="create">
+		insert into question(id, q_title, q_content, q_time)
+		values(#{id}, #{q_title}, #{q_content}, now())
+	</insert>
+	<update id="modify">
+		update question set q_title = #{q_title}, q_content = #{q_content}, q_time = now()
+		where q_no = #{q_no}
+	</update>
+	<delete id="delete">
+		delete from question
+		where q_no = #{q_no}
+	</delete>
+</mapper>
